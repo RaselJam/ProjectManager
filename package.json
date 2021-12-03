@@ -1,0 +1,22 @@
+{
+  "name": "project-management",
+  "version": "1.0.0",
+  "description": "To manage the the Work flow of building and maintainig a(or multiple at same time) software Project(s), and how team memebers devide the work to do , and track the jobs done so far ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaselJam/projectManager.git"
+  },
+  "keywords": [
+    "project-management"
+  ],
+  "author": "Rasul Heidari Jamshidi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaselJam/projectManager/issues"
+  },
+  "homepage": "https://github.com/RaselJam/projectManager#readme"
+}
