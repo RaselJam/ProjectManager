@@ -17,7 +17,7 @@ router.post('/signup', async (req, res, next) => {
 })
 router.post('/login', async (req, res, next) => {
   const { userName, password } = req.body;
-  //TODO ADD validation on recived data
+
   try {
     const user = await userLogic.login({ userName, password })
     if (user) {

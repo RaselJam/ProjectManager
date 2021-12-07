@@ -2,7 +2,7 @@ import UserModel from '../models/User.model.js';
 
 export const signup =  (user) => {
   console.log("signing up:",user)
-  const res = UserModel.create(user, { new: true })
+  const res = UserModel.create(user)
   return res;
 }
 

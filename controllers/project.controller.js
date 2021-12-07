@@ -2,7 +2,7 @@ import projectModel from '../models/Project.model.js';
 
 //Basic Crud :
 export const createProject = (project) => {
-  return projectModel.create(project, { new: true });
+  return projectModel.create(project);
 }
 
 export const getProjectById = (id) => {
@@ -43,3 +43,4 @@ export const addDevToProject = (creatorId, projectId, developerId) => {
 export const addManagerToProject = (creatorId, projectId, managerId) => {
   return projectModel.findOneAndUpdate({ _id: projectId, creator: creatorId }, { $push: { "managers": managerId } }, { new: true })
 }
+

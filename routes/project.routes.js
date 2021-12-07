@@ -46,11 +46,11 @@ router.get('/:id', async (req, res, next) => {
     next(error)
   }
 })
-//FIXME Get the CreatorId from server current user , instead of Client side.
+
 router.post('/', async (req, res, next) => {
   try {
     const { name, description } = req.body;
-    console.log("creating project :", name, description, creator)
+    console.log("creating project :", name, description)
     const result = await projectLogic.createProject({ name, description, creator: req.session.currentUser._id })
     res.json({ message: 'ok', data: result })
   } catch (error) {
