@@ -7,7 +7,7 @@ const projectSchema = mongoose.Schema({
   creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
   managers: { type: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User" }], default: [] },
   developers: { type: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User" }], default: [] }
-})
+},{ timestamps: true })
 var Project = mongoose.model('Project', projectSchema);
 
 export default Project;

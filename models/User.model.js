@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   password: String,
   isSuper: { type: Boolean, default: false }
 
-})
+},{ timestamps: true })
 var User = mongoose.model('User', userSchema);
 
 export default User;

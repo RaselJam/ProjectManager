@@ -6,7 +6,7 @@ const taskSchema = mongoose.Schema({
   description: String,
   isDone: { type: Boolean, default: false },
   ticket: { type: mongoose.SchemaTypes.ObjectId, ref: "Ticket", required: true },
-})
+}, { timestamps: true })
 var Task = mongoose.model('Task', taskSchema);
 
 export default Task;

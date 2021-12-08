@@ -12,7 +12,7 @@ const ticketSchema = mongoose.Schema({
   creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true, },
   developer: { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null },
   Predecessor: { type: mongoose.SchemaTypes.ObjectId, ref: "Ticket", default: undefined }
-})
+},{ timestamps: true })
 var Ticket = mongoose.model('Ticket', ticketSchema);
 
 export default Ticket;

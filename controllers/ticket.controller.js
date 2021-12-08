@@ -39,9 +39,14 @@ export const updateTicket = (ticketId, ticket) => {
 /**
  *It checks a given tikcetId's tasks, if all tasks are done,asigenTrueto IsDoneKey of Ticket
  */
-export const checkTasksStatusAndUpdateTicket = (tikcetId) => {
-
-  //TODO start here
+export const checkTasksStatusAndUpdateTicket = async (ticketId) => {
+  try {
+    let isDone = await taskModel.find({ ticket: ticketId }).every(elm => elm.isDone)
+    console.log("Checking if it`s Done : ", isDone)
+    return ticketModel.findByIdAndUpdate(ticketId, { isDone: isDone }, { new: true })
+  } catch (error) {
+    throw error;
+  }
 }
 //Task part :
 export const addTask = (task) => {
@@ -52,10 +57,8 @@ export const addTask = (task) => {
   ]);
 }
 
-export const removeTask = (taskId, ticketId) => {
-
-
-
+export const removeTask = (taskId) => {
+  return taskModel.findByIdAndDelete(taskId)
 }
 //TODO testme
 export const doTask = (subTaskId) => {

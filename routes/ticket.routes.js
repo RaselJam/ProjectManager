@@ -30,11 +30,9 @@ router.get('/my-tickets', async (req, res, next) => {
     next(error)
   }
 
-
 })
 //Authorization, only A user in a project has access to this area bellow:
 router.use(async (req, res, next) => {
-
   try {
     const userId = req.session.currentUser._id
     let { projectId } = req.body
@@ -51,7 +49,7 @@ router.use(async (req, res, next) => {
     next(error)
   }
 })
-//profile/tickets/project/:id it returns all ticket of this project
+//profile/tickets/project/:id it returns all tickets of this project
 router.get('/project/:id', async (req, res, next) => {
   try {
     const projectTickets = await ticketLogic.getThisProjectTickets(req.params.id)
@@ -83,16 +81,42 @@ router.post('/add-task', async (req, res, next) => {
     next(error)
   }
 })
-router.post('/remove-task', async (req, res) => {
+router.post('/remove-task', async (req, res, next) => {
   console.log("removing task from Ticket")
-  const { ticketId , projectId, taskId} = req.body
+  const { ticketId, taskId } = req.body
   try {
-
+    let removingTaskReult = await ticketLogic.removeTask(taskId);
+    let updatedTiket = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
+    res.status(202).json({ message: "OK", data: { removedTask: removingTaskReult, ticket: updatedTiket } })
   } catch (error) {
-
+    next(error)
   }
-
 })
+
+router.post('/do-task', async (req, res, next) => {
+  console.log("Doing Task...")
+  const { ticketId, taskId } = req.body
+  try {
+    const taskResult = await ticketLogic.doTask(taskId);
+    const ticketResult = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
+    res.status(202).json({ message: "OK", data: { taskDone: taskResult, ticket: ticketResult } })
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.post('/undo-task', async (req, res, next) => {
+  console.log("Un Doing Task...")
+  const { ticketId, taskId } = req.body
+  try {
+    const taskResult = await ticketLogic.unDoTask(taskId);
+    const ticketResult = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
+    res.status(202).json({ message: "OK", data: { taskUnDone: taskResult, tiket: ticketResult } })
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post('/', async (req, res, next) => {
   try {
     const { number, description, project, Predecessor } = req.body
