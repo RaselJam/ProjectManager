@@ -5,10 +5,10 @@ import * as commentLogic from '../controllers/comment.controller.js';
 
 
 
-//Profile/tikets
+//Profile/tickets
 const router = express.Router();
 
-router.get('/all', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   console.log("got in nested route")
   try {
     if (req.session.currentUser.isSuper) {

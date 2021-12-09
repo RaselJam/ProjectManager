@@ -29,6 +29,15 @@ router.post('/', async (req, res, next) => {
     next(error)
   }
 })
+router.post('/update/:id', async (req, res, next) => {
+  try {
+    const { name, description, creatorId, projectId } = req.body;
+    const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
+    res.status(202).json({ message: 'OK', data: result })
+  } catch (error) {
+    next(error)
+  }
+})
 router.get('/user-projects-as-dev', async (req, res, next) => {
   try {
     const allProjects = await projectLogic.getDeveloperProjects(req.session.currentUser._id)
@@ -74,10 +83,22 @@ router.get('/:id', async (req, res, next) => {
     next(error)
   }
 })
-
+router.use(async (req, res, next) => {
+  try {
+    const userId = req.session.currentUser._id
+    let { projectId } = req.body
+    if (!projectId) throw new Error("Add projectId in your Request body")
+    const project = await projectLogic.getProjectById(projectId)
+    let amIIn = project.managers.some(elm => elm.equals(userId))
+     console.log("Authorized as manager? : ", amIIn)
+    if (amIIn) next();//All good continue
+    else throw new Error("Un Authorized attempt, user must be  a Manager to have access, Contact Project creator")
+  } catch (error) {
+    next(error)
+  }
+})
 router.post('/:id/add-dev', async (req, res, next) => {
   try {
-
     const { developerId } = req.body;
     console.log("Adding dev to project :", req.params.id, req.session.currentUser._id, developerId)
     const result = await projectLogic.addDevToProject(req.session.currentUser._id, req.params.id, developerId)
@@ -86,6 +107,20 @@ router.post('/:id/add-dev', async (req, res, next) => {
       res.status(202).json({ message: 'ok', data: result })
     }
     else res.status(400).json({ message: 'FAILURE', data: result })
+  } catch (error) {
+    next(error)
+  }
+})
+router.use(async (req, res, next) => {
+  try {
+    const userId = req.session.currentUser._id
+    let { projectId } = req.body
+    if (!projectId) throw new Error("Add projectId in your Request body")
+    const project = await projectLogic.getProjectById(projectId)
+    let amIIn = project.creator.equals(userId);
+     console.log("Authorized as creator? : ", amIIn)
+    if (amIIn) next();//All good continue
+    else throw new Error("Un Authorized attempt, user must be  a Creator to have access. create your own project or contact the current creator get access right")
   } catch (error) {
     next(error)
   }
@@ -116,13 +151,8 @@ router.post('/:id/remove', async (req, res, next) => {
 
 
 })
-router.post('/:id', async (req, res, next) => {
-  try {
-    const { name, description, creatorId, projectId } = req.body;
-    const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
-    res.status(202).json({ message: 'OK', data: result })
-  } catch (error) {
-    next(error)
-  }
-})
+
+
+
+
 export default router;

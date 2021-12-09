@@ -69,6 +69,7 @@ export const checkTasksStatusAndUpdateTicket = async (ticketId) => {
   }
 }
 //Task part :
+//TODO specific authorization fro devs, managers/creators
 export const addTask = (task) => {
   const ticketId = task.ticket
   return Promise.all([
@@ -84,7 +85,7 @@ export const removeTask = (taskId) => {
 export const removeTasksByFilter = (filter) => {
   return taskModel.deleteMany(filter);
 }
-//ok:
+
 export const doTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: true }, { new: true })
 }
