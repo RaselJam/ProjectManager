@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
   res.json({
     "Endpoints": [
-      { auth: [{ 'GET:signeup': "signup" }, { 'POST:login': "login" }] },
+      { auth: [{ 'GET:signeup': "signup" }, { 'POST:login': "login" }, { "GET:/logout": "logout" }] },
       {
         profile: [
           { 'GET:/': "profile page" }, { 'GET:/my-tikcets': "all tikcets taken by current user if any" },
