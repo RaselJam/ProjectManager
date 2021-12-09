@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     //
     "INFO": {
       "name": "Project ManagerAPI", "version": 0.1, "author": {
-        "name": "rasul heidari", Socials: { "github": "https://github.com/RaselJam", "LinkedIn": "https://www.linkedin.com/in/rasul-jam-6b3343205/", "Email": "rasel.jam.h@gmail.com" }
+        "name": "rasul Jam ", Socials: { "github": "https://github.com/RaselJam", "LinkedIn": "https://www.linkedin.com/in/rasul-jam-6b3343205/", "Email": "rasel.jam.h@gmail.com" }
       }
     },
     "Endpoints": [
