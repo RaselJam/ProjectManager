@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.json({
     //
     "INFO": {
-      "name": "Project ManagerAPI", "version": 0.1, "author": {
+      "name": "Project ManagerAPI", "version": 0.1, style:"RPC",  "author": {
         "name": "rasul Jam ", Socials: { "github": "https://github.com/RaselJam", "LinkedIn": "https://www.linkedin.com/in/rasul-jam-6b3343205/", "Email": "rasel.jam.h@gmail.com" }
       }
     },
