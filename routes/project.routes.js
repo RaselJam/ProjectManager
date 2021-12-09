@@ -11,8 +11,20 @@ router.get('/', async (req, res, next) => {
       const allProjects = await projectLogic.getAllProject();
       res.json({ message: "OK", data: allProjects })
     }
-    throw new Error("Not Authorized, Contact Web master")
+    res.status(403).send({message:'Not Authorized, Contact Web master'});
 
+
+
+  } catch (error) {
+    next(error)
+  }
+})
+router.post('/', async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    console.log("creating project :", name, description)
+    const result = await projectLogic.createProject({ name, description, creator: req.session.currentUser._id, managers: [req.session.currentUser._id] })
+    res.status(201).json({ message: 'ok', data: result })
   } catch (error) {
     next(error)
   }
@@ -35,7 +47,23 @@ router.get('/user-projects-as-manager', async (req, res, next) => {
     next(error)
   }
 })
-
+router.use(async (req, res, next) => {
+  try {
+    const userId = req.session.currentUser._id
+    let { projectId } = req.body
+    if (!projectId) throw new Error("Add projectId in your Request body")
+    const project = await projectLogic.getProjectById(projectId)
+    let amIIn =
+      project.developers.some(elm => elm.equals(userId)) ||
+      project.managers.some(elm => elm.equals(userId)) ||
+      project.creator.equals(userId);
+    console.log("Authorized? : ", amIIn)
+    if (amIIn) next();//All good continue
+    else throw new Error("Un Authorized attempt, user must be in a project to have access, Contact your Project manager")
+  } catch (error) {
+    next(error)
+  }
+})
 router.get('/:id', async (req, res, next) => {
   try {
     console.log("Getting single Project :", req.params.id)
@@ -47,58 +75,54 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/:id/add-dev', async (req, res, next) => {
   try {
-    const { name, description } = req.body;
-    console.log("creating project :", name, description)
-    const result = await projectLogic.createProject({ name, description, creator: req.session.currentUser._id })
-    res.json({ message: 'ok', data: result })
-  } catch (error) {
-    next(error)
-  }
-})
 
-router.post('/:id', async (req, res, next) => {
-  try {
-    const { name, description, creator } = req.body;
-    const result = await projectLogic.updateProject({ name, description, creator })
-    res.json({ message: 'OK', data: result })
-  } catch (error) {
-    next(error)
-  }
-})
-router.post('/:id/adddev', async (req, res, next) => {
-  try {
-    //TODO add logic to accept An array of devs and add them all together
-
-    const { creatorId, developerId } = req.body;
-    console.log("Adding dev to project :", req.params.id, creatorId, developerId)
-    const result = await projectLogic.addDevToProject(creatorId, req.params.id, developerId)
+    const { developerId } = req.body;
+    console.log("Adding dev to project :", req.params.id, req.session.currentUser._id, developerId)
+    const result = await projectLogic.addDevToProject(req.session.currentUser._id, req.params.id, developerId)
     console.log("result: ", result)
     if (result?.developers.includes(developerId)) {
-      res.json({ message: 'ok', data: result })
+      res.status(202).json({ message: 'ok', data: result })
     }
     else res.status(400).json({ message: 'FAILURE', data: result })
   } catch (error) {
     next(error)
   }
 })
-
-router.post('/:id/addmanager', async (req, res, next) => {
+router.post('/:id/add-manager', async (req, res, next) => {
   try {
-    //TODO add logic to accept An array of managers and add them all together
 
-    const { creatorId, managerId } = req.body;
+    const { managerId } = req.body;
     console.log("Adding manager to :", req.params.id)
-    const result = await projectLogic.addManagerToProject(creatorId, req.params.id, managerId)
+    const result = await projectLogic.addManagerToProject(req.session.currentUser._id, req.params.id, managerId)
+    console.log("result", result)
     if (result?.managers.includes(managerId)) {
-      res.json({ message: 'ok', data: result })
+      res.status(202).json({ message: 'ok', data: result })
     }
     else res.status(400).json({ message: 'FAILURE', data: result })
   } catch (error) {
     next(error)
   }
 })
+router.post('/:id/remove', async (req, res, next) => {
+  try {
+    console.log("trying to remove project id : ", req.params.id)
+    const result = await projectLogic.removeProject(req.session.currentUser._id, req.params.id)
+    res.status(202).json({ message: 'OK', data: result })
+  } catch (error) {
+    next(error)
+  }
 
 
+})
+router.post('/:id', async (req, res, next) => {
+  try {
+    const { name, description, creatorId, projectId } = req.body;
+    const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
+    res.status(202).json({ message: 'OK', data: result })
+  } catch (error) {
+    next(error)
+  }
+})
 export default router;

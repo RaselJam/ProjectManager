@@ -1,5 +1,6 @@
 import ticketModel from '../models/Ticket.model.js'
 import taskModel from '../models/Task.model.js'
+import { removeCommentsByFilter } from './comment.controller.js';
 
 
 export const getAllticket = () => {
@@ -37,13 +38,32 @@ export const updateTicket = (ticketId, ticket) => {
   return ticketModel.findByIdAndUpdate(ticketId, ticket);
 }
 /**
+ *It will try t remove all sub Task and Comments related to  each ticket too
+ * @param {project Id} projectId
+ * @returns an array result of all promisses
+ */
+export const removeThisProjectTickets = async (projectId) => {
+  let tickets = await ticketModel.find({ project: projectId })
+  return Promise.all(tickets.map(tikect => removeTikcet(tikect._id)))
+}
+export const removeTikcet = (id) => {
+  return Promise.all([
+    ticketModel.findOneAndDelete(id),
+    removeTasksByFilter({ ticket: id }),
+    removeCommentsByFilter({ ticket: id })
+  ])
+}
+/**
  *It checks a given tikcetId's tasks, if all tasks are done,asigenTrueto IsDoneKey of Ticket
+ It will return true/false if the whole tikcet is done ot not
  */
 export const checkTasksStatusAndUpdateTicket = async (ticketId) => {
   try {
-    let isDone = await taskModel.find({ ticket: ticketId }).every(elm => elm.isDone)
-    console.log("Checking if it`s Done : ", isDone)
-    return ticketModel.findByIdAndUpdate(ticketId, { isDone: isDone }, { new: true })
+    console.log("Doing the Tikcet if all tasks are done")
+    let tasks = await taskModel.find({ ticket: ticketId })
+    const isDone = tasks.every(t => t.isDone)
+    await ticketModel.findByIdAndUpdate(ticketId, { isDone: isDone }, { new: true })
+    return isDone;
   } catch (error) {
     throw error;
   }
@@ -60,11 +80,19 @@ export const addTask = (task) => {
 export const removeTask = (taskId) => {
   return taskModel.findByIdAndDelete(taskId)
 }
-//TODO testme
+
+export const removeTasksByFilter = (filter) => {
+  return taskModel.deleteMany(filter);
+}
+//ok:
 export const doTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: true }, { new: true })
 }
+//TODO Test me
 export const unDoTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: false }, { new: true })
 }
 
+export const getTikcetTasks = (ticketId) => {
+  return taskModel.find({ ticket: ticketId });
+}

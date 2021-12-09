@@ -1,6 +1,7 @@
 import express from 'express';
 import * as ticketLogic from '../controllers/ticket.controller.js'
 import * as projectLogic from '../controllers/project.controller.js'
+import * as commentLogic from '../controllers/comment.controller.js';
 
 
 
@@ -14,7 +15,7 @@ router.get('/all', async (req, res, next) => {
       const allTickets = await ticketLogic.getAllticket()
       res.json({ message: "OK", data: allTickets })
     }
-    throw new Error("Not Authorized, Contact Web master")
+    res.status(403).send({message:'Not Authorized, Contact Web master'});
 
   } catch (error) {
     next(error)
@@ -24,8 +25,13 @@ router.get('/all', async (req, res, next) => {
 router.get('/my-tickets', async (req, res, next) => {
   try {
     const userTickets = await ticketLogic.getallUserTickets(req.session.currentUser._id);
-    console.log(userTickets)
-    return res.json({ message: "OK", data: userTickets })
+    let promiseArrTasks = userTickets.map(ticket => ticketLogic.getTikcetTasks(ticket._id))
+    Promise.all(promiseArrTasks).then(data => {
+      console.log(data, "promise all result")
+      const result = data.map((elm, idx) => { return { ticket: userTickets[idx], tasks: elm } })
+      return res.json({ message: "OK", data: result })
+    })
+      .catch(err => console.log(err))
   } catch (error) {
     next(error)
   }
@@ -49,6 +55,34 @@ router.use(async (req, res, next) => {
     next(error)
   }
 })
+router.get('/:id', async (req, res, next) => {
+  try {
+    const ticket = await ticketLogic.getTicketById(req.params.id);
+    res.json({ message: 'OK', data: ticket })
+  } catch (error) {
+    next(error)
+  }
+})
+router.get('/:id/comments', async (req, res, next) => {
+  try {
+    const comments = await commentLogic.getCommentsByTicket(req.params.id)
+    res.json({ message: 'OK', data: comments })
+  } catch (error) {
+    next(error)
+  }
+
+})
+router.post('/:id/comments', async (req, res) => {
+  try {
+    const { comment } = req.body;
+    const result = commentLogic.createComment({ user: req.session.currentUser._id, ticket: req.params.id, comment })
+    res.status(201).json({ message: 'OK', data: result })
+
+  } catch (error) {
+    next(error)
+  }
+
+})
 //profile/tickets/project/:id it returns all tickets of this project
 router.get('/project/:id', async (req, res, next) => {
   try {
@@ -58,7 +92,6 @@ router.get('/project/:id', async (req, res, next) => {
     next(error)
   }
 })
-
 router.post('/take-it', async (req, res, next) => {
   try {
     const user = req.session.currentUser._id
@@ -87,46 +120,47 @@ router.post('/remove-task', async (req, res, next) => {
   try {
     let removingTaskReult = await ticketLogic.removeTask(taskId);
     let updatedTiket = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
-    res.status(202).json({ message: "OK", data: { removedTask: removingTaskReult, ticket: updatedTiket } })
+    res.status(202).json({ message: "OK", data: { removedTask: removingTaskReult, ticketIsDone: updatedTiket } })
   } catch (error) {
     next(error)
   }
 })
-
 router.post('/do-task', async (req, res, next) => {
   console.log("Doing Task...")
   const { ticketId, taskId } = req.body
   try {
     const taskResult = await ticketLogic.doTask(taskId);
+    console.log("taskResult :", taskResult)
     const ticketResult = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
-    res.status(202).json({ message: "OK", data: { taskDone: taskResult, ticket: ticketResult } })
+    res.status(202).json({ message: "OK", data: { taskDone: taskResult, ticketIsDone: ticketResult } })
   } catch (error) {
     next(error)
   }
 })
-
 router.post('/undo-task', async (req, res, next) => {
   console.log("Un Doing Task...")
   const { ticketId, taskId } = req.body
   try {
     const taskResult = await ticketLogic.unDoTask(taskId);
     const ticketResult = await ticketLogic.checkTasksStatusAndUpdateTicket(ticketId);
-    res.status(202).json({ message: "OK", data: { taskUnDone: taskResult, tiket: ticketResult } })
+    res.status(202).json({ message: "OK", data: { taskUnDone: taskResult, ticketIsDone: ticketResult } })
   } catch (error) {
     next(error)
   }
 })
+//profile/tickets/tasks
 
+//Create Ticket :
 router.post('/', async (req, res, next) => {
   try {
-    const { number, description, project, Predecessor } = req.body
+    let { number, description, projectId, Predecessor } = req.body
+    Predecessor = Predecessor === '' ? null : Predecessor
     const creator = req.session.currentUser._id
-    const result = await ticketLogic.createTicket({ number, description, project, Predecessor, creator })
+    const result = await ticketLogic.createTicket({ number, description, project: projectId, Predecessor, creator })
     console.log(result)
     res.status(201).json({ message: 'OK', data: result })
   } catch (error) {
     next(error)
   }
-
 })
 export default router;

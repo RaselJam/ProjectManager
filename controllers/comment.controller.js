@@ -2,7 +2,7 @@ import commentModel from '../models/Comment.model.js';
 
 
 
-export const addComment = (comment) => {
+export const createComment = (comment) => {
   return commentModel.create(comment)
 }
 
@@ -12,15 +12,25 @@ export const updateComment = (comment) => {
   delete comment._id;
   return commentModel.findByIdAndUpdate(id, comment, { new: true })
 }
+
+
+//Reading :
+export const getCommentsByTicket = (ticketId) => {
+  return commentModel.find({ ticket: ticketId })
+}
+
+export const getCommentsByUser = (userId) => {
+  return commentModel.find({ user: userId }).populate('user')
+}
+
+export const getCommentById = (id) => {
+  return commentModel.findById(id);
+}
+
+//Deleting :
 export const removeComment = (id) => {
   return commentModel.findByIdAndDelete(id);
 }
-
-//Reading :
-export const getTicketComments = (ticketId) => {
-  return commentModel.find({ ticket: ticketId }).populate('Ticket');
-}
-
-export const getCommentByUser = (userId) => {
-  return commentModel.find({ user: userId })
+export const removeCommentsByFilter = (filter) => {
+  return commentModel.deleteMany(filter);
 }

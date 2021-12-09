@@ -7,7 +7,7 @@ const router = express.Router();
 router.use('/tickets', tikcetsRoutes);
 router.get('/', (req, res) => {
   console.log('profile')
-  res.status(200).json({ message: "ok" })
+  res.json({ message: "ok" })
 })
 
 

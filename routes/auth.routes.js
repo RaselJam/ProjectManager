@@ -10,7 +10,7 @@ router.post('/signup', async (req, res, next) => {
   try {
     const newUser = await userLogic.signup({ userName, password })
     console.log("message got from controler on signup:", newUser)
-    res.json({ messsage: 'OK', data: newUser })
+    res.status(201).json({ messsage: 'OK', data: newUser })
   } catch (error) {
     next(error)
   }

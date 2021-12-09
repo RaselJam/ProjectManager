@@ -6,13 +6,14 @@ const ticketSchema = mongoose.Schema({
   },
 
   description: String,
-  project: { type: mongoose.SchemaTypes.ObjectId, ref: "Project" },
-  // subTasks: { type: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Task" }], default: [] },
+  project: { type: mongoose.SchemaTypes.ObjectId, ref: "Project", required: true },
   isDone: { type: Boolean, default: false },
-  creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true, },
+  creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true },
   developer: { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null },
-  Predecessor: { type: mongoose.SchemaTypes.ObjectId, ref: "Ticket", default: undefined }
-},{ timestamps: true })
+  Predecessor: { type: mongoose.SchemaTypes.ObjectId, ref: "Ticket", default: undefined },
+
+}, { timestamps: true })
+
 var Ticket = mongoose.model('Ticket', ticketSchema);
 
 export default Ticket;
