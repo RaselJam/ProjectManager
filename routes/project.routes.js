@@ -3,7 +3,7 @@ import * as projectLogic from '../controllers/project.controller.js'
 
 const router = express.Router();
 
-
+//FIXME Refactor Authorization Logic to avoid repeated Code.
 router.get('/', async (req, res, next) => {
   try {
 
@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
       const allProjects = await projectLogic.getAllProject();
       res.json({ message: "OK", data: allProjects })
     }
-    res.status(403).send({message:'Not Authorized, Contact Web master'});
+    res.status(403).send({ message: 'Not Authorized, Contact Web master' });
 
 
 
@@ -90,7 +90,7 @@ router.use(async (req, res, next) => {
     if (!projectId) throw new Error("Add projectId in your Request body")
     const project = await projectLogic.getProjectById(projectId)
     let amIIn = project.managers.some(elm => elm.equals(userId))
-     console.log("Authorized as manager? : ", amIIn)
+    console.log("Authorized as manager? : ", amIIn)
     if (amIIn) next();//All good continue
     else throw new Error("Un Authorized attempt, user must be  a Manager to have access, Contact Project creator")
   } catch (error) {
@@ -111,6 +111,7 @@ router.post('/:id/add-dev', async (req, res, next) => {
     next(error)
   }
 })
+
 router.use(async (req, res, next) => {
   try {
     const userId = req.session.currentUser._id
@@ -118,7 +119,7 @@ router.use(async (req, res, next) => {
     if (!projectId) throw new Error("Add projectId in your Request body")
     const project = await projectLogic.getProjectById(projectId)
     let amIIn = project.creator.equals(userId);
-     console.log("Authorized as creator? : ", amIIn)
+    console.log("Authorized as creator? : ", amIIn)
     if (amIIn) next();//All good continue
     else throw new Error("Un Authorized attempt, user must be  a Creator to have access. create your own project or contact the current creator get access right")
   } catch (error) {

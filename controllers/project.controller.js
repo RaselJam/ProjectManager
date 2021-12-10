@@ -1,6 +1,6 @@
 import projectModel from '../models/Project.model.js';
 import { removeThisProjectTickets } from './ticket.controller.js';
-
+//FIXMEClean duplicated and Refactor all
 //Basic Crud :
 export const createProject = (project) => {
   return projectModel.create(project);

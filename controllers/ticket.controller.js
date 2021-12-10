@@ -54,22 +54,23 @@ export const removeTikcet = (id) => {
   ])
 }
 /**
- *It checks a given tikcetId's tasks, if all tasks are done,asigenTrueto IsDoneKey of Ticket
- It will return true/false if the whole tikcet is done ot not
+ *It checks a given tikcetId's tasks, if all tasks are done,asigenTrueto IsDone Key of Ticket
+ It will return true/false if the whole tikcet is done or not
  */
 export const checkTasksStatusAndUpdateTicket = async (ticketId) => {
   try {
+
     console.log("Doing the Tikcet if all tasks are done")
     let tasks = await taskModel.find({ ticket: ticketId })
     const isDone = tasks.every(t => t.isDone)
     await ticketModel.findByIdAndUpdate(ticketId, { isDone: isDone }, { new: true })
     return isDone;
+
   } catch (error) {
     throw error;
   }
 }
 //Task part :
-//TODO specific authorization fro devs, managers/creators
 export const addTask = (task) => {
   const ticketId = task.ticket
   return Promise.all([
@@ -89,7 +90,7 @@ export const removeTasksByFilter = (filter) => {
 export const doTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: true }, { new: true })
 }
-//TODO Test me
+
 export const unDoTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: false }, { new: true })
 }

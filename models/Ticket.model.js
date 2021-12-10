@@ -2,10 +2,17 @@ import mongoose from 'mongoose';
 const ticketSchema = mongoose.Schema({
   number: {
     type: String,
-    unique: true
+    unique: true,
+    required: true,
+    trim: true,
   },
 
-  description: String,
+  description:{
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 200
+  },
   project: { type: mongoose.SchemaTypes.ObjectId, ref: "Project", required: true },
   isDone: { type: Boolean, default: false },
   creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true },

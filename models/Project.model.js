@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 const projectSchema = mongoose.Schema({
   name: {
     type: String,
+    required: true,
+    trim: true,
+    maxlength: 20
   },
   description: String,
   creator: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
