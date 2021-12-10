@@ -26,7 +26,7 @@ router.post('/login', async (req, res, next) => {
     }
     else {
       req.session.currentUser = null;
-      res.status(401).json({ messsage: 'Incorrect User-name/password' })
+      res.json({ messsage: 'Incorrect User-name/password'})
     }
   } catch (error) {
     next(error)
