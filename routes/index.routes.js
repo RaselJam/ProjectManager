@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
       }
     },
     "Endpoints": [
-      { auth: [{ 'GET:signeup': "signup" }, { 'POST:login': "login" }, { "GET:/logout": "logout" }] },
+      { auth: [{ 'POST:auth/signeup': "signup" }, { 'POST:auth/login': "login" }, { "GET:auth/logout": "logout" }] },
       {
         profile: [
           { 'GET:/': "profile page" }, { 'GET:/my-tikcets': "all tikcets taken by current user if any" },
