@@ -1,6 +1,6 @@
 import projectModel from '../models/Project.model.js';
 import { removeThisProjectTickets } from './ticket.controller.js';
-//FIXME Clean duplicated and Refactor all
+//FIXME Clean duplicated and Refactor all, some Function were never used,track and clean them
 //Basic Crud :
 export const createProject = (project) => {
   return projectModel.create(project);
@@ -9,7 +9,9 @@ export const createProject = (project) => {
 export const getProjectById = (id) => {
   return projectModel.findOne({ _id: id });
 }
-
+export const getRelatedProjects= (userId)=>{
+ return Promise.all([getCreatorProjects(userId),getManagerProjects(userId),getDeveloperProjects(userId)])
+}
 export const getProjectByFilter = (filter) => {
   return projectModel.find(filter);
 }

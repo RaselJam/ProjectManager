@@ -1,7 +1,9 @@
 import express from 'express';
 import * as projectLogic from '../controllers/project.controller.js'
+import { ROLES, onlyThease } from './middlewares/middlewares.js'
 
 const router = express.Router();
+
 
 //FIXME Refactor Authorization Logic to avoid repeated Code.
 router.get('/', async (req, res, next) => {
@@ -56,23 +58,9 @@ router.get('/user-projects-as-manager', async (req, res, next) => {
     next(error)
   }
 })
-router.use(async (req, res, next) => {
-  try {
-    const userId = req.session.currentUser._id
-    let { projectId } = req.body
-    if (!projectId) throw new Error("Add projectId in your Request body")
-    const project = await projectLogic.getProjectById(projectId)
-    let amIIn =
-      project.developers.some(elm => elm.equals(userId)) ||
-      project.managers.some(elm => elm.equals(userId)) ||
-      project.creator.equals(userId);
-    console.log("Authorized? : ", amIIn)
-    if (amIIn) next();//All good continue
-    else throw new Error("Un Authorized attempt, user must be in a project to have access, Contact your Project manager")
-  } catch (error) {
-    next(error)
-  }
-})
+
+// only Related person has access(only reading) :
+router.use('/:id', await onlyThease(ROLES.related));
 router.get('/:id', async (req, res, next) => {
   try {
     console.log("Getting single Project :", req.params.id)
@@ -83,20 +71,9 @@ router.get('/:id', async (req, res, next) => {
     next(error)
   }
 })
-router.use(async (req, res, next) => {
-  try {
-    const userId = req.session.currentUser._id
-    let { projectId } = req.body
-    if (!projectId) throw new Error("Add projectId in your Request body")
-    const project = await projectLogic.getProjectById(projectId)
-    let amIIn = project.managers.some(elm => elm.equals(userId))
-    console.log("Authorized as manager? : ", amIIn)
-    if (amIIn) next();//All good continue
-    else throw new Error("Un Authorized attempt, user must be  a Manager to have access, Contact Project creator")
-  } catch (error) {
-    next(error)
-  }
-})
+
+//from this below only creator or Managers has access(asigne new dev to team
+router.use('/:id/add-dev', await onlyThease([ROLES.managers, ROLES.creator]));
 router.post('/:id/add-dev', async (req, res, next) => {
   try {
     const { developerId } = req.body;
@@ -112,20 +89,8 @@ router.post('/:id/add-dev', async (req, res, next) => {
   }
 })
 
-router.use(async (req, res, next) => {
-  try {
-    const userId = req.session.currentUser._id
-    let { projectId } = req.body
-    if (!projectId) throw new Error("Add projectId in your Request body")
-    const project = await projectLogic.getProjectById(projectId)
-    let amIIn = project.creator.equals(userId);
-    console.log("Authorized as creator? : ", amIIn)
-    if (amIIn) next();//All good continue
-    else throw new Error("Un Authorized attempt, user must be  a Creator to have access. create your own project or contact the current creator get access right")
-  } catch (error) {
-    next(error)
-  }
-})
+//from here below only the creator has access: managing all aspect of the project
+router.use(await onlyThease([ROLES.creator]))
 router.post('/:id/add-manager', async (req, res, next) => {
   try {
 
@@ -153,7 +118,8 @@ router.post('/:id/remove', async (req, res, next) => {
 
 })
 
-
-
-
 export default router;
+
+
+
+//Midlles :
