@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
           { 'POST:/projects/:id/add-dev': "add new dev to the Project, User must be  manager", 'req.body': ['developerId'] },
           { 'POST:/projects/:id/add-manager': "add new manager to the Project, User must be  creator", 'req.body': ['managerId'] },
           { 'POST:/projects/:id/remove': "remove the project from DB (there is no roling back, make sure).user must be  creator", 'req.body': ['projectId'] },
-          { 'POST:/projects/update/:id/': "update the project .Here it is possible to chnage the creator by proving  new creatorId.the current creator will lose its ownership, but still will be as manager/developer.user must be  creator", 'req.body': ['name', 'description', { 'creatorId ': 'this is optional, and it will chnage the owner ship and access privlage to new user' }] },
+          { 'POST:/projects/update/:id/': "update the project .Here it is possible to chnage the creator by proving  new creatorId.the current creator will lose its ownership, but still will be as manager/developer.user must be  creator", 'req.body': ['name', 'description', 'projectId' ,{ 'creatorId ': 'this is optional, and it will chnage the owner ship and access privlage to new user' }] },
         ]
       }
     ]
