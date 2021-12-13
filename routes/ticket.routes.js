@@ -75,7 +75,7 @@ router.get('/:id/comments', async (req, res, next) => {
   }
 
 })
-router.post('/:id/comments', async (req, res) => {
+router.post('/:id/comments', async (req, res, next) => {
   try {
     const { comment } = req.body;
     const result = commentLogic.createComment({ user: req.session.currentUser._id, ticket: req.params.id, comment })

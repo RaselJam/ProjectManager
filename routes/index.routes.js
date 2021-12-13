@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
           { 'POST:profile/tickets/remove-task': 'remove a task from a given ticket.  user must be Manager', 'req.body': ['projectId', 'tikcetId', 'taskId'] },
           { 'GET:profile/tickets/:id': 'get Single Ticket,user MUST be in the Project as  one of creator/manager/developer', 'req.body': ['projectId'] },
           { 'GET:profile/tickets/:id/comments': 'get All Commnets under a given Tikcet', 'req.body': ['projectId'] },
+          { 'POST:profile/tickets/:id/comments': 'post a new Commnets under a given Tikcet', 'req.body': ['comment'] },
         ]
       },
       {
