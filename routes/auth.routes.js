@@ -10,7 +10,7 @@ router.post('/signup', async (req, res, next) => {
   try {
     const newUser = await userLogic.signup({ userName, password })
     console.log("message got from controler on signup:", newUser)
-    res.status(201).json({ messsage: 'OK', data: newUser })
+    res.status(201).json({ message: 'OK', data: newUser })
   } catch (error) {
     next(error)
   }
@@ -22,11 +22,11 @@ router.post('/login', async (req, res, next) => {
     const user = await userLogic.login({ userName, password })
     if (user) {
       req.session.currentUser = user;
-      res.json({ messsage: 'OK', data: user })
+      res.json({ message: 'OK', data: user })
     }
     else {
       req.session.currentUser = null;
-      res.json({ messsage: 'Incorrect User-name/password' })
+      res.json({ message: 'Incorrect User-name/password' })
     }
   } catch (error) {
     next(error)
@@ -36,7 +36,7 @@ router.get('/logout', async (req, res, next) => {
   console.log("trying loging out")
   req.session.destroy(err => {
     if (err) next(err);
-    res.status(200).json({ messsage: "ok" });
+    res.status(200).json({ message: "ok" });
   })
 
 })
