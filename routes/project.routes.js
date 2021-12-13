@@ -101,6 +101,8 @@ router.post('/:id/add-manager', async (req, res, next) => {
 router.post('/update/:id', async (req, res, next) => {
   try {
     const { name, description, creatorId, projectId } = req.body;
+    //If the clinete doesnt want to change the creator the current will remain as is
+    if(!creatorId) creatorId = req.session.currentUser._id;
     const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
     res.status(202).json({ message: 'OK', data: result })
   } catch (error) {
