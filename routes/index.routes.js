@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
               message: 'OK',
               data: {
                 projects: { asCreator: [], asManager: [], asDev: [] },
-                tickets: "true/false"
+                tickets: { done: [], notDone: [] }
               }
             }
           },
