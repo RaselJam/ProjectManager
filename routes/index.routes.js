@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
       }
     },
     "Endpoints": [
-      { auth: [{ 'POST:auth/signeup': "signup" }, { 'POST:auth/login': "login" }, { "GET:auth/logout": "logout" }] },
+      { auth: [{ 'POST:auth/signeup': "signup" }, { 'POST:auth/login': "login" }, { "GET:auth/logout": "logout" }] }, { "GET:auth/islogedin": "isLogedIn" },
       {
         profile: [
           {

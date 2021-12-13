@@ -26,7 +26,7 @@ router.post('/login', async (req, res, next) => {
     }
     else {
       req.session.currentUser = null;
-      res.json({ messsage: 'Incorrect User-name/password'})
+      res.json({ messsage: 'Incorrect User-name/password' })
     }
   } catch (error) {
     next(error)
@@ -41,5 +41,11 @@ router.get('/logout', async (req, res, next) => {
 
 })
 
+router.get('/islogedin', async (req, res, next) => {
+  console.log("checking if loged In")
+   (req.session.currentUser)?
+    res.json({messsage:'OK', data: req.session.currentUser}) :
+      res.status(401).json({ code: 401, message: 'Unauthorized' })
+  })
 
-export default router;
+  export default router;
