@@ -41,11 +41,15 @@ router.get('/logout', async (req, res, next) => {
 
 })
 
-router.get('/islogedin', async (req, res, next) => {
+router.get('/islogedin', (req, res, next) => {
   console.log("checking if loged In")
-   (req.session.currentUser)?
-    res.json({messsage:'OK', data: req.session.currentUser}) :
+  try {
+    (req.session.currentUser) ?
+      res.json({ messsage: 'OK', data: req.session.currentUser }) :
       res.status(401).json({ code: 401, message: 'Unauthorized' })
-  })
+  } catch (error) {
+    next(error)
+  }
+})
 
-  export default router;
+export default router;
