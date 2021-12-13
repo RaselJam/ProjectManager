@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.json({
     //
     "INFO": {
-      "name": "Project ManagerAPI", "version": 0.1, style:"RPC",  "author": {
+      "name": "Project ManagerAPI", "version": 0.1, style: "RPC", "author": {
         "name": "rasul Jam ", Socials: { "github": "https://github.com/RaselJam", "LinkedIn": "https://www.linkedin.com/in/rasul-jam-6b3343205/", "Email": "rasel.jam.h@gmail.com" }
       }
     },
@@ -16,7 +16,16 @@ router.get('/', (req, res) => {
       { auth: [{ 'POST:auth/signeup': "signup" }, { 'POST:auth/login': "login" }, { "GET:auth/logout": "logout" }] },
       {
         profile: [
-          { 'GET:profile': "profile page" },
+          {
+            'GET:profile': "profile data",
+            response: {
+              message: 'OK',
+              data: {
+                projects: { asCreator: [], asManager: [], asDev: [] },
+                tickets: "true/false"
+              }
+            }
+          },
           { 'GET:profile/my-tickets': "all tikcets taken by current user if any" },
           { 'GET:profile/tickets/': 'get All Tickets in db, Only available for WEBMASTER ADMIN', 'req.body': ['projectId'] },
           { 'GET:profile/tickets/project/:id': 'All tikcet of a given Project.user MUST be in the Project as  one of creator/manager/developer', 'req.body': ['projectId'] },
@@ -28,7 +37,7 @@ router.get('/', (req, res) => {
           { 'POST:profile/tickets/remove-task': 'remove a task from a given ticket.  user must be Manager', 'req.body': ['projectId', 'tikcetId', 'taskId'] },
           { 'GET:profile/tickets/:id': 'get Single Ticket,user MUST be in the Project as  one of creator/manager/developer', 'req.body': ['projectId'] },
           { 'GET:profile/tickets/:id/comments': 'get All Commnets under a given Tikcet', 'req.body': ['projectId'] },
-          { 'POST:profile/tickets/:id/comments': 'post a new Commnets under a given Tikcet', 'req.body': ['comment','projectId'] },
+          { 'POST:profile/tickets/:id/comments': 'post a new Commnets under a given Tikcet', 'req.body': ['comment', 'projectId'] },
         ]
       },
       {
@@ -43,7 +52,7 @@ router.get('/', (req, res) => {
           { 'POST:/projects/:id/add-dev': "add new dev to the Project, User must be  manager", 'req.body': ['developerId'] },
           { 'POST:/projects/:id/add-manager': "add new manager to the Project, User must be  creator", 'req.body': ['managerId'] },
           { 'POST:/projects/:id/remove': "remove the project from DB (there is no roling back, make sure).user must be  creator", 'req.body': ['projectId'] },
-          { 'POST:/projects/update/:id/': "update the project .Here it is possible to chnage the creator by proving  new creatorId.the current creator will lose its ownership, but still will be as manager/developer.user must be  creator", 'req.body': ['name', 'description', 'projectId' ,{ 'creatorId ': 'this is optional, and it will chnage the owner ship and access privlage to new user' }] },
+          { 'POST:/projects/update/:id/': "update the project .Here it is possible to chnage the creator by proving  new creatorId.the current creator will lose its ownership, but still will be as manager/developer.user must be  creator", 'req.body': ['name', 'description', 'projectId', { 'creatorId ': 'this is optional, and it will chnage the owner ship and access privlage to new user' }] },
         ]
       }
     ]
