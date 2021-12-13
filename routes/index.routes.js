@@ -16,7 +16,8 @@ router.get('/', (req, res) => {
       { auth: [{ 'POST:auth/signeup': "signup" }, { 'POST:auth/login': "login" }, { "GET:auth/logout": "logout" }] },
       {
         profile: [
-          { 'GET:/': "profile page" }, { 'GET:/my-tikcets': "all tikcets taken by current user if any" },
+          { 'GET:profile': "profile page" },
+          { 'GET:profile/my-tickets': "all tikcets taken by current user if any" },
           { 'GET:profile/tickets/': 'get All Tickets in db, Only available for WEBMASTER ADMIN', 'req.body': ['projectId'] },
           { 'GET:profile/tickets/project/:id': 'All tikcet of a given Project.user MUST be in the Project as  one of creator/manager/developer', 'req.body': ['projectId'] },
           { 'POST:profile/tickets/take-it': 'asign a given tikcet to current user, user must be in project as developer', 'req.body': ['projectId', 'tikcetId'] },
