@@ -46,7 +46,7 @@ router.get('/islogedin', (req, res, next) => {
   try {
     (req.session.currentUser) ?
       res.json({ messsage: 'OK', data: req.session.currentUser }) :
-      res.status(401).json({ code: 401, message: 'Unauthorized' })
+      res.json({ message: 'Unauthorized', data:null })
   } catch (error) {
     next(error)
   }
