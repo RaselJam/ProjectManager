@@ -36,7 +36,7 @@ router.get('/logout', async (req, res, next) => {
   console.log("trying loging out")
   req.session.destroy(err => {
     if (err) next(err);
-    res.status(200).json({ message: "ok" });
+    res.status(200).json({ message: "OK" });
   })
 
 })
