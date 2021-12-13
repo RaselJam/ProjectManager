@@ -45,7 +45,7 @@ router.get('/islogedin', (req, res, next) => {
   console.log("checking if loged In")
   try {
     (req.session.currentUser) ?
-      res.json({ messsage: 'OK', data: req.session.currentUser }) :
+      res.json({ message: 'OK', data: req.session.currentUser }) :
       res.json({ message: 'Unauthorized', data:null })
   } catch (error) {
     next(error)
