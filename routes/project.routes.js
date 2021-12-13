@@ -31,15 +31,7 @@ router.post('/', async (req, res, next) => {
     next(error)
   }
 })
-router.post('/update/:id', async (req, res, next) => {
-  try {
-    const { name, description, creatorId, projectId } = req.body;
-    const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
-    res.status(202).json({ message: 'OK', data: result })
-  } catch (error) {
-    next(error)
-  }
-})
+
 router.get('/user-projects-as-dev', async (req, res, next) => {
   try {
     const allProjects = await projectLogic.getDeveloperProjects(req.session.currentUser._id)
@@ -102,6 +94,15 @@ router.post('/:id/add-manager', async (req, res, next) => {
       res.status(202).json({ message: 'ok', data: result })
     }
     else res.status(400).json({ message: 'FAILURE', data: result })
+  } catch (error) {
+    next(error)
+  }
+})
+router.post('/update/:id', async (req, res, next) => {
+  try {
+    const { name, description, creatorId, projectId } = req.body;
+    const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
+    res.status(202).json({ message: 'OK', data: result })
   } catch (error) {
     next(error)
   }
