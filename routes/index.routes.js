@@ -36,7 +36,8 @@ router.get('/', (req, res) => {
           { 'GET:/projects/': "All Projects, Only available for WEBMASTER ADMIN" },
           { 'GET:/projects/user-projects-as-dev': "All Projects related to given user as developer" },
           { 'GET:/projects/user-projects-as-manager': "All Projects related to given user as manager" },
-          { 'GET:/projects/user-projects-as-manager': "All Projects related to given user as manager, the creator is a manager by default" },
+          { 'GET:/projects/user-projects-as-creator': "All Projects related to given user as manager, the creator is a manager by default any way on creation. but here is an specific endpoint if user update a project after creation" },
+
           { 'GET:/projects/:id': "Single Project, User must be realated to the project" },
           { 'POST:/projects/': "Create a new Project", 'req.body': ['name', 'description'] },
           { 'POST:/projects/:id/add-dev': "add new dev to the Project, User must be  manager", 'req.body': ['developerId'] },

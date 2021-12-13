@@ -51,6 +51,21 @@ router.get('/user-projects-as-manager', async (req, res, next) => {
   }
 })
 
+router.get('/user-projects-as-creator', async (re, res, next) => {
+
+  try {
+    const allProjects = await projectLogic.getCreatorProjects(req.session.currentUser._id)
+      .populate('managers');
+    res.json({ message: "OK", data: allProjects })
+  } catch (error) {
+    next(error)
+  }
+
+})
+
+
+
+
 // only Related person has access(only reading) :
 router.use('/:id', await onlyThease(ROLES.related));
 router.get('/:id', async (req, res, next) => {
@@ -102,7 +117,7 @@ router.post('/update/:id', async (req, res, next) => {
   try {
     const { name, description, creatorId, projectId } = req.body;
     //If the clinete doesnt want to change the creator the current will remain as is
-    if(!creatorId) creatorId = req.session.currentUser._id;
+    if (!creatorId) creatorId = req.session.currentUser._id;
     const result = await projectLogic.updateProject(req.session.currentUser._id, { _id: projectId, name, description, creator: creatorId })
     res.status(202).json({ message: 'OK', data: result })
   } catch (error) {
