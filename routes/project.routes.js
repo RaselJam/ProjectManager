@@ -36,6 +36,7 @@ router.get('/user-projects-as-dev', async (req, res, next) => {
   try {
     const allProjects = await projectLogic.getDeveloperProjects(req.session.currentUser._id)
       .populate('developers');
+
     res.json({ message: "OK", data: allProjects })
   } catch (error) {
     next(error)
@@ -87,10 +88,7 @@ router.post('/:id/add-dev', async (req, res, next) => {
     console.log("Adding dev to project :", req.params.id, req.session.currentUser._id, developerId)
     const result = await projectLogic.addDevToProject(req.session.currentUser._id, req.params.id, developerId)
     console.log("result: ", result)
-    if (result?.developers.includes(developerId)) {
-      res.status(202).json({ message: 'ok', data: result })
-    }
-    else res.status(400).json({ message: 'FAILURE', data: result })
+    res.status(202).json({ message: 'ok', data: result })
   } catch (error) {
     next(error)
   }

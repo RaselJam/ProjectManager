@@ -10,9 +10,12 @@ import * as projectLogic from '../controllers/project.controller.js'
 const router = express.Router();
 //Nested router:Profile/tikets
 router.use('/tickets', tikcetsRoutes);
+
+
+
 router.get('/', async (req, res, next) => {
   const userId = req.session.currentUser._id
-  console.log('profile user ID : ', userId);
+  console.log('profile user ID, getting related projects ... : ', userId);
   try {
     const relatedProjects = await projectLogic.getRelatedProjects(userId)
     const takenTickets = await tikcetLogic.getallUserTickets(userId)

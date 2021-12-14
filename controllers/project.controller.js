@@ -21,15 +21,15 @@ export const getAllProject = () => {
 }
 
 export const getCreatorProjects = (userId) => {
-  return projectModel.find({ creator: userId })
+  return projectModel.find({ creator: userId }).populate('developers')
 }
 
 export const getDeveloperProjects = (developerId) => {
-  return projectModel.find({ developers: developerId })
+  return projectModel.find({ developers: developerId }).populate('developers')
 }
 
 export const getManagerProjects = (managerId) => {
-  return projectModel.find({ managers: managerId })
+  return projectModel.find({ managers: managerId }).populate('developers')
 }
 export const updateProject = async (creatorId, project) => {
   console.log("got in update project control creatorId:", creatorId)
@@ -61,7 +61,7 @@ export const removeProject = async (creatorId, id) => {
 export const addDevToProject = (managerId, projectId, developerId) => {
   return projectModel.findOneAndUpdate(
     { _id: projectId, managers: managerId },
-    { $push: { "developers": developerId } }, { new: true })
+    { $push: { "developers": developerId } }, { new: true }).populate('developers')
 }
 export const addManagerToProject = (creatorId, projectId, managerId) => {
   return projectModel.findOneAndUpdate(
