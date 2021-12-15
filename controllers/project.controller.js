@@ -7,7 +7,7 @@ export const createProject = (project) => {
 }
 
 export const getProjectById = (id) => {
-  return projectModel.findOne({ _id: id });
+  return projectModel.findOne({ _id: id }).populate('developers').populate('managers');
 }
 export const getRelatedProjects= (userId)=>{
  return Promise.all([getCreatorProjects(userId),getManagerProjects(userId),getDeveloperProjects(userId)])
@@ -17,26 +17,26 @@ export const getProjectByFilter = (filter) => {
 }
 
 export const getAllProject = () => {
-  return projectModel.find()
+  return projectModel.find().populate('developers').populate('managers')
 }
 
 export const getCreatorProjects = (userId) => {
-  return projectModel.find({ creator: userId }).populate('developers')
+  return projectModel.find({ creator: userId }).populate('developers').populate('managers')
 }
 
 export const getDeveloperProjects = (developerId) => {
-  return projectModel.find({ developers: developerId }).populate('developers')
+  return projectModel.find({ developers: developerId }).populate('developers').populate('managers')
 }
 
 export const getManagerProjects = (managerId) => {
-  return projectModel.find({ managers: managerId }).populate('developers')
+  return projectModel.find({ managers: managerId }).populate('developers').populate('managers')
 }
 export const updateProject = async (creatorId, project) => {
   console.log("got in update project control creatorId:", creatorId)
   const id = project._id;
   delete project._id;
   console.log("projectID: ", id)
-  const projectTarget = await projectModel.findOne({ _id: id, creator: creatorId })
+  const projectTarget = await projectModel.findOne({ _id: id, creator: creatorId }).populate('developers').populate('managers')
   console.log("project : ", projectTarget)
   if (projectTarget) {
     return projectModel.findByIdAndUpdate(id, project, { new: true })
@@ -46,7 +46,7 @@ export const updateProject = async (creatorId, project) => {
 //Deleting :
 export const removeProject = async (creatorId, id) => {
   console.log("got in remove proj control")
-  const project = await projectModel.findOne({ _id: id, creator: creatorId })
+  const project = await projectModel.findOne({ _id: id, creator: creatorId }).populate('managers').populate('developers')
   console.log("project : ", project)
   if (project) {
     return Promise.all([
@@ -61,7 +61,7 @@ export const removeProject = async (creatorId, id) => {
 export const addDevToProject = (managerId, projectId, developerId) => {
   return projectModel.findOneAndUpdate(
     { _id: projectId, managers: managerId },
-    { $push: { "developers": developerId } }, { new: true }).populate('developers')
+    { $push: { "developers": developerId } }, { new: true }).populate('developers').populate('managers')
 }
 export const addManagerToProject = (creatorId, projectId, managerId) => {
   return projectModel.findOneAndUpdate(
