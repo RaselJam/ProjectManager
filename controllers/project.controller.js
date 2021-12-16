@@ -9,8 +9,8 @@ export const createProject = (project) => {
 export const getProjectById = (id) => {
   return projectModel.findOne({ _id: id }).populate('developers').populate('managers');
 }
-export const getRelatedProjects= (userId)=>{
- return Promise.all([getCreatorProjects(userId),getManagerProjects(userId),getDeveloperProjects(userId)])
+export const getRelatedProjects = (userId) => {
+  return Promise.all([getCreatorProjects(userId), getManagerProjects(userId), getDeveloperProjects(userId)])
 }
 export const getProjectByFilter = (filter) => {
   return projectModel.find(filter);
@@ -66,6 +66,6 @@ export const addDevToProject = (managerId, projectId, developerId) => {
 export const addManagerToProject = (creatorId, projectId, managerId) => {
   return projectModel.findOneAndUpdate(
     { _id: projectId, creator: creatorId },
-    { $push: { "managers": managerId } }, { new: true })
+    { $push: { "managers": managerId } }, { new: true }).populate('developers').populate('managers')
 }
 

@@ -3,6 +3,7 @@ import tikcetsRoutes from '../routes/ticket.routes.js'
 import * as userLogic from '../controllers/auth.controller.js';
 import * as tikcetLogic from '../controllers/ticket.controller.js';
 import * as projectLogic from '../controllers/project.controller.js'
+import * as helper from '../helpers/helper.js'
 
 
 
@@ -19,7 +20,7 @@ router.get('/', async (req, res, next) => {
   try {
     const relatedProjects = await projectLogic.getRelatedProjects(userId)
     const takenTickets = await tikcetLogic.getallUserTickets(userId)
-    const [done, notDone] = splitArrayBasedOnProp(takenTickets, 'isDone')
+    const [done, notDone] =helper.splitArrayBasedOnProp(takenTickets, 'isDone')
     res.json({
       message: 'OK',
       data: {
@@ -36,11 +37,3 @@ router.get('/', async (req, res, next) => {
 
 export default router;
 //helpers:
-function splitArrayBasedOnProp(arr, prop) {
-  const arr1 = [];
-  const arr2 = [];
-  arr.forEach(elm => {
-    elm[prop] ? arr1.push(elm) : arr2.push(elm)
-  })
-  return [arr1, arr2]
-}
