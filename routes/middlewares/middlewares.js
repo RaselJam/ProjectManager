@@ -14,9 +14,16 @@ Object.freeze(ROLES)
 
 export async function onlyThease(acceptedRoles) {
   return async function (req, res, next) {
+
     try {
       const userId = req.session.currentUser._id
+      //Axios probel on including body to GET Requestfallback to params if its not present
       let { projectId } = req.body
+      if (!projectId) {
+        projectId = req.params.id
+      }
+      //
+      console.log("params: ", req.params)
       let amIIn = await isAuthorized({ userId, projectId, acceptedRoles })
       console.log("Authorized? : ", amIIn)
       const [, ...superiors] = acceptedRoles;
