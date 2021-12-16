@@ -90,6 +90,11 @@ export const doTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: true }, { new: true })
 }
 
+
+export const doTicket = (ticketId) => {
+  return ticketModel.findByIdAndUpdate(ticketId, { isDone: true }, { new: true })
+}
+
 export const unDoTask = (subTaskId) => {
   return taskModel.findOneAndUpdate({ _id: subTaskId }, { isDone: false }, { new: true })
 }

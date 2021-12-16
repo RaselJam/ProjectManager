@@ -130,7 +130,7 @@ router.post('/undo-task', async (req, res, next) => {
     next(error)
   }
 })
-router.use( await onlyThease([ROLES.managers,ROLES.creator]))
+router.use(await onlyThease([ROLES.managers, ROLES.creator]))
 router.post('/add-task', async (req, res, next) => {
   try {
     const { name, description, ticketId } = req.body;
@@ -153,7 +153,17 @@ router.post('/remove-task', async (req, res, next) => {
     next(error)
   }
 })
+router.post('/do-Ticket', async (req, res, next) => {
+  console.log("Doing ticket...")
+  const { ticketId } = req.body
+  try {
+    let doingTicketResult = await ticketLogic.doTicket(ticketId)
+    res.status(202).json({ message: "OK", data: doingTicketResult })
+  } catch (error) {
+    next(error)
+  }
 
+})
 //profile/tickets/tasks
 
 //Create Ticket :

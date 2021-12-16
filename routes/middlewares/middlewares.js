@@ -19,11 +19,20 @@ export async function onlyThease(acceptedRoles) {
       const userId = req.session.currentUser._id
       //Axios probel on including body to GET Requestfallback to params if its not present
       let { projectId } = req.body
-      if (!projectId) {
+      if (!projectId && req.params.id) {
         projectId = req.params.id
+      }
+      else {
+        //Last resort get theprojectID from URL :
+        //there must be better way for all this butno time for now
+        //TODO Refactor the whole idea of getting projectId from cliente and validatation
+        let destruct = req.originalUrl.split('/')
+        projectId = destruct[destruct.length - 1];
+
       }
       //
       console.log("params: ", req.params)
+
       let amIIn = await isAuthorized({ userId, projectId, acceptedRoles })
       console.log("Authorized? : ", amIIn)
       const [, ...superiors] = acceptedRoles;
