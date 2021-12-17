@@ -17,12 +17,13 @@ export async function onlyThease(acceptedRoles) {
 
     try {
       const userId = req.session.currentUser._id
-      //Axios probel on including body to GET Requestfallback to params if its not present
+      //Axios  on including body to GET Requestfallback to params if its not present
       let { projectId } = req.body
+      console.log("projectID: ", projectId)
       if (!projectId && req.params.id) {
         projectId = req.params.id
       }
-      else {
+      else if(!projectId) {
         //Last resort get theprojectID from URL :
         //there must be better way for all this butno time for now
         //TODO Refactor the whole idea of getting projectId from cliente and validatation

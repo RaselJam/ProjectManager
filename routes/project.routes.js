@@ -21,6 +21,7 @@ router.get('/', async (req, res, next) => {
     next(error)
   }
 })
+
 router.post('/', async (req, res, next) => {
   try {
     const { name, description } = req.body;
@@ -111,6 +112,7 @@ router.post('/:id/add-manager', async (req, res, next) => {
     next(error)
   }
 })
+
 router.post('/update/:id', async (req, res, next) => {
   try {
     const { name, description, creatorId, projectId } = req.body;
