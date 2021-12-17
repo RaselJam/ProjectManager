@@ -92,6 +92,7 @@ export const doTask = (subTaskId) => {
 
 
 export const doTicket = (ticketId) => {
+  console.log("doing...id: ", ticketId)
   return ticketModel.findByIdAndUpdate(ticketId, { isDone: true }, { new: true })
 }
 

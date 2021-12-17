@@ -156,6 +156,7 @@ router.post('/remove-task', async (req, res, next) => {
 router.post('/do-Ticket', async (req, res, next) => {
   console.log("Doing ticket...")
   const { ticketId } = req.body
+  console.log("req.body: ", req.body)
   try {
     let doingTicketResult = await ticketLogic.doTicket(ticketId)
     res.status(202).json({ message: "OK", data: doingTicketResult })
